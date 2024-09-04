@@ -1,7 +1,7 @@
 # language: es
 Característica: Funcionalidad demo puntonet
 
-  Esquema del escenario: Registro de cliente puntonet
+  Esquema del escenario: Validar el correcto ingreso de Clientes
     Dado que el usuario accede a la página ingresa usuario "<usuario>" y contraseña "<contrasena>" y realiza clic en el botón iniciar sesión
     Cuando el usuario ingresa nombre, apellido, cédula, fecha_nacimiento, teléfono, estado_civil, email, género y dirección en el formulario de registro
       | nombre   | apellido   | cédula   | fecha_nacimiento   | teléfono   | estado_civil   | email   | género   | dirección   |
