@@ -1,5 +1,7 @@
 package com.demotest.stepdefinitions;
 
+import com.demotest.utils.daos.DaoUtil;
+import com.demotest.utils.searches.ScriptComponentManipulation;
 import io.cucumber.java.Before;
 import io.cucumber.java.es.Cuando;
 import io.cucumber.java.es.Dado;
@@ -10,29 +12,25 @@ import net.serenitybdd.core.annotations.findby.By;
 import net.serenitybdd.core.steps.UIInteractionSteps;
 import static org.assertj.core.api.Assertions.assertThat;
 import com.demotest.utils.actions.NavigationActions;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebElement;
 
 public class FuncionalidadPruebaDemoStepDefinitions extends UIInteractionSteps {
 
     NavigationActions navigate;
+    DaoUtil daoUtil;
+    ScriptComponentManipulation scriptComponentManipulation;
 
     @Before
     public void cargarAplicacion(){
-        navigate.abrirAplicacionDemo();
+        daoUtil = new DaoUtil();
     }
 
     @Dado("que el usuario accede a la página ingresa usuario {string} y contraseña {string} y realiza clic en el botón iniciar sesión")
     public void usuarioAccedeEIngresaCredenciales(String usuario, String contrasena) {
+        navigate.abrirAplicacionDemo();
         $(By.id("user")).sendKeys(usuario);
         $(By.className("p-password-input")).sendKeys(contrasena);
         Serenity.takeScreenshot();
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        daoUtil.waitTime(1.0);
         $(By.className("btn")).click();
     }
 
@@ -42,100 +40,31 @@ public class FuncionalidadPruebaDemoStepDefinitions extends UIInteractionSteps {
 
         for (java.util.Map<String, String> fila : datos) {
             $(By.id("nombre")).sendKeys(fila.get("nombre"));
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            daoUtil.waitTime(0.5);
+
             $(By.id("apellido")).sendKeys(fila.get("apellido"));
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            daoUtil.waitTime(0.5);
+
             $(By.id("cedula")).sendKeys(fila.get("cédula"));
+            daoUtil.waitTime(0.5);
 
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            WebElement fechaNacCalendar = $(By.cssSelector("#fecha input")).getElement();
-            fechaNacCalendar.click();
-            fechaNacCalendar.sendKeys(fila.get("fecha_nacimiento"), Keys.ENTER);
-
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            scriptComponentManipulation.llenarPcalendarPorSelectorPorValorkey("#fecha input", fila.get("fecha_nacimiento"));
+            daoUtil.waitTime(0.5);
 
             $(By.id("telefono")).sendKeys(fila.get("teléfono"));
+            daoUtil.waitTime(0.5);
 
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            WebElement estadoCivilDropdown = $(By.xpath("//p-dropdown[@id='estadoCivil']")).getElement();
-            estadoCivilDropdown.click();
-            String scriptJSEstadoCivil =
-                    "var dropdown = arguments[0];" +
-                            "var optionText = arguments[1];" +
-                            "var items = dropdown.querySelectorAll('.p-dropdown-item');" +
-                            "for (var i = 0; i < items.length; i++) {" +
-                            "    if (items[i].textContent.trim() === optionText) {" +
-                            "        items[i].click();" +
-                            "        return true;" +
-                            "    }" +
-                            "}" +
-                            "return false;";
-            ((JavascriptExecutor) getDriver()).executeScript(scriptJSEstadoCivil, estadoCivilDropdown, fila.get("estado_civil"));
-
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            scriptComponentManipulation.llenarPdropdownPorXpathPorValorkey("//p-dropdown[@id='estadoCivil']", fila.get("estado_civil"));
+            daoUtil.waitTime(0.5);
 
             $(By.id("email")).sendKeys(fila.get("email"));
+            daoUtil.waitTime(0.5);
 
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            WebElement generoDropdown = $(By.xpath("//p-dropdown[@id='genero']")).getElement();
-            generoDropdown.click();
-            String scriptJSGenero =
-                    "var dropdown = arguments[0];" +
-                            "var optionText = arguments[1];" +
-                            "var items = dropdown.querySelectorAll('.p-dropdown-item');" +
-                            "for (var i = 0; i < items.length; i++) {" +
-                            "    if (items[i].textContent.trim() === optionText) {" +
-                            "        items[i].click();" +
-                            "        return true;" +
-                            "    }" +
-                            "}" +
-                            "return false;";
-            ((JavascriptExecutor) getDriver()).executeScript(scriptJSGenero, generoDropdown,  fila.get("género"));
-
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            scriptComponentManipulation.llenarPdropdownPorXpathPorValorkey("//p-dropdown[@id='genero']", fila.get("género"));
+            daoUtil.waitTime(0.5);
 
             $(By.id("direccion")).sendKeys(fila.get("dirección"));
-
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            daoUtil.waitTime(0.5);
         }
     }
 
@@ -146,13 +75,8 @@ public class FuncionalidadPruebaDemoStepDefinitions extends UIInteractionSteps {
 
     @Entonces("debería ver notificación de ingreso exitoso")
     public void usuarioVeNotificacionExitosa() {
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        daoUtil.waitTime(2.0);
         String mensajeExito = $(By.className("p-toast-detail")).getText();
-        assertThat(mensajeExito).isEqualTo("Cliente creado correctamente");
+        assertThat(mensajeExito).isEqualTo("Cliente ingresado correctamente");
     }
-
 }
